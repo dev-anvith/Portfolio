@@ -1,0 +1,501 @@
+:root {
+    --primary-color: #2E073F;       /* Dark Purple */
+    --secondary-color: #7A1CAC;     /* Medium Purple */
+    --accent-color: #AD49E1;        /* Light Purple */
+    --text-color: #EBD3F8;          /* Light Lavender */
+}
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;             /* Removes default margin */
+    padding: 0;            /* Removes default padding */
+    box-sizing: border-box; /* Ensures padding and borders are included in element's width and height */
+    font-family: 'Source Code Pro', sans-serif; /* Changed to the new font */
+        background-color: black; /* Default background color */
+    color:aliceblue;           /* Default text color */
+    line-height: 1.5;  
+    overflow-x: hidden;     /* Sets the line height for readability */
+}
+
+
+.nav-bar{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+    width: auto;
+
+}
+header{
+    background: black;
+}
+.company-name{
+    display: flex;
+    flex: 1;
+}
+.company-name h1{
+    color: aliceblue;
+    margin-left: 40px;
+}
+.nav-links{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* margin-left: auto; */
+    margin-right: 40px;
+    flex: 0;
+}
+.nav-links a {
+    margin-left: 10px;
+     margin-right: 10px;           
+    text-decoration: none;
+    color: aliceblue;
+    font-size: 16px;
+    padding: 10px;               /* Padding inside the links */
+    border: 1px solid aliceblue; /* Thin white border around the links */
+    transition: background-color 0.3s, color 0.3s; /* Optional: smooth hover effect */
+}
+
+.nav-links a:hover {
+    background-color: aliceblue;  /* Change background on hover */
+    color: black;                 /* Change text color on hover */
+}   
+
+
+/* landing screen */
+
+.landing-screen{
+    padding: 75px;
+}
+
+.my-intro{
+    display: flex;
+    flex-direction: row;
+    /* border: 1px solid white   ; */
+    /* padding: 30px; */
+
+
+}
+.my-intro-text{
+    display: flex;
+    padding: 10px 50px;
+    flex-direction: column;
+    border: 1px solid white   ;
+
+    
+}
+.my-intro-text h1{
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-style: italic;
+    /* border: 1px solid white   ; */
+    /* font-weight: 800; */
+
+}
+.highlight{
+    background: linear-gradient(135deg,
+        var(--accent-color) 0%, 
+        var(--primary-color) 33%, 
+        var(--secondary-color) 66%, 
+        var(--accent-color) 100% 
+       );
+        background-size: 200%; /* Increase the size to allow movement */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        /* text-fill-color: transparent; */
+        font-size: 2.7rem;
+        font-style: italic;
+        font-weight: 900px;
+        animation: moving-gradient 5s linear infinite alternate;
+        
+}
+.my-intro-image{
+    border: 1px solid white   ;
+    padding: 15px;
+
+}
+.my-intro-image img{
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover;
+}
+.my-intro-text p{
+    font-size: 1.5rem;
+    /* border: 1px solid white   ; */
+    color: var(--text-color);
+
+}
+
+.projects{
+    padding: 10px 75px;
+}
+
+
+/* Project Block  */
+.project-block {
+    border: 1px solid #ccc;
+    height: 300px;
+    width: 400px;
+    padding: 20px;
+    margin: 10px 0;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative; /* This makes the project block the reference for absolute positioning */
+}
+
+.project-block button {
+    padding: 10px 15px;
+
+    color: var(--accent-color);
+    border: 1px solid white;
+    background-color: black;
+    cursor: pointer;
+    position: absolute; /* Positioning the button absolutely inside the project block */
+    bottom: 10px; /* Align the button 10px from the bottom */
+    right: 10px;  /* Align the button 10px from the right */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.project-block button:hover {
+    background-color: white;
+    color: black;
+}
+
+.project-block h3 {
+    margin-top: acc;
+    font-size: 24px;
+}
+
+.project-block p {
+    color: var(--text-color);
+    font-size: 18px;
+}
+
+/* .project-block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for better text readability 
+} */
+
+#projects-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    /* gap: 40px; */
+    padding: 50px 20px;
+    flex-wrap: wrap;
+}
+
+/* road map */
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+} */
+ .journey{
+    padding-top: 70px;
+    padding-bottom: 0px;
+ }
+
+ .section-heading{
+    font-size: 30px;
+    font-weight: 700;
+    
+ }
+
+.road-map {
+    position: relative;
+    width: 80%;
+    margin: 50px auto;
+    padding: 100px 0;
+}
+
+.roadmap-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(135deg, 
+    var(--primary-color) 0%, 
+    var(--secondary-color) 33%, 
+    var(--accent-color) 66%, 
+    var(--text-color) 100%);  
+    /* background-repeat: repeat-y; */
+    background-size: 200% 200%; /* Double the size for smooth transition */
+    animation: gradient-animation 2s linear infinite; 
+    transform: translateX(-50%);
+    z-index: 0;
+}
+
+/* Animation to move the background */
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+.milestone {
+    position: relative;
+    width: 250px;
+    background-color: #000;
+    color: #fff;
+    border: 2px solid white;
+    padding: 15px;
+    margin: 30px 0;
+    z-index: 1;
+}
+
+.milestone h3 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.milestone p {
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.milestone.left {
+    left: 40%;
+    transform: translateX(-100%);
+}
+
+.milestone.right {
+    left: 60%;
+    transform: translateX(0%);
+}
+
+/* Styling for milestone boxes */
+.milestone.left:before,
+.milestone.right:before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-style: solid;
+}
+
+.milestone.left:before {
+    left: 100%;
+    border-width: 10px 0 10px 10px;
+    /* border-color: transparent transparent transparent #000; */
+}
+
+.milestone.right:before {
+    right: 100%;
+    border-width: 10px 10px 10px 0;
+    /* border-color: transparent #000 transparent transparent; */
+}
+
+.contact{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.my-mail {
+    background: linear-gradient(135deg, 
+        var(--primary-color) 0%, 
+        var(--secondary-color) 33%, 
+        var(--accent-color) 66%, 
+        var(--text-color) 100%);
+    background-size: 200%; /* Increase the size to allow movement */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* text-fill-color: transparent; */
+    font-size: 1.5rem;
+    font-weight: bold;
+    animation: moving-gradient 5s linear infinite alternate; /* Moving gradient animation */
+}
+
+@keyframes moving-gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.my-mail:hover {
+    color: var(--accent-color); /* Change to solid color on hover */
+}
+
+
+
+footer{
+    display: flex;
+    justify-content: flex-end;
+    padding: 40px;
+}
+
+ /* Styling for all social media icons */
+ .insta, .x, .linkedin {
+    font-size: 30px;  /* Set the size of the icons */
+    color: var(--secondary-color);   /* Default color */
+    margin: 0 10px;   /* Space between icons */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect */
+.insta:hover, .x:hover, .linkedin:hover {
+    color: var(--accent-color);   /* Change color on hover */
+}
+
+.contact-links{
+    padding: 20px 0;
+}
+
+/* media queries  */
+/* Media Queries for Mobile View */
+/* Styles for smaller screens */
+/* Media Queries for Tablet and Smaller Screens */
+/* Media Queries for Tablets (portrait mode and below) */
+@media (max-width: 768px) {
+    /* Stack Navbar */
+    .nav-links{
+        margin-left: auto;
+        margin-right: 15px;
+    }
+    .my-intro-image{
+        display: none;
+    }
+    .projects-container{
+        display: flex;
+        justify-content: space-evenly;
+        flex-direction: column;
+        
+    }
+    .project-block{
+        width: max-content;
+    }
+
+
+    
+}
+
+/* Media Queries for Phones (small screens and below) */
+/* Media Queries for Phones (small screens and below) */
+@media (max-width: 430px) {
+    /* Smaller Navbar Links */
+    .nav-bar {
+        padding: 0;
+    }
+
+    .nav-links a {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    /* Adjust Header */
+    header {
+        padding: 10px;
+    }
+
+    .landing-screen {
+        flex: none;
+        padding: 10px;
+        margin: 10px;
+    }
+
+    /* Stack Intro Text */
+    .my-intro-text {
+        padding: 10px;
+        width: 90%;
+        text-align: center;
+        margin: auto;
+    }
+
+    .my-intro-text h1 {
+        font-size: 1.8rem;
+    }
+
+    .my-intro-text p {
+        font-size: 1rem;
+    }
+
+    /* Stack Project Cards */
+    .project-block {
+        width: 100%;               /* Full width for mobile */
+        margin: 10px auto;       /* Center alignment */
+    }
+
+    /* Stack Milestones in the Road Map */
+    .milestone {
+        width: 40%; /* Full width on smaller screens */
+        margin: 15px 0; /* Margin for spacing */
+        padding: 10px;  /* Adjust padding for smaller screens */
+    }
+
+    .roadmap-line {
+        display: flex; /* Hides the roadmap line */
+    }
+    .section-heading{
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    .road-map {
+        display: flex;              /* Enables flexbox */
+        flex-direction: column;     /* Stacks child elements vertically */
+        width: 100%;               /* Ensure it takes full width */
+        padding: 20px;             /* Optional: Add padding for spacing */
+        overflow: hidden;          /* Hide overflow */
+    }
+    .milestone h3{
+        font-size: 1rem;
+    }
+    .milestone p{
+        font-size: 0.8rem;
+    }
+.projects h2{
+    font-size: 1.3rem;
+    
+    
+}
+.project-block h3{
+    font-size: 1.2rem;
+
+}
+.project-block p{
+    font-size: 1rem;
+}
+.contact h2{
+    text-align: center;
+    font-size: 1.3rem;
+}
+footer p{
+    font-size: 0.8rem;
+}
+}
+
+
