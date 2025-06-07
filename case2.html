@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuadHash Case Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e073f;
+            --secondary-color: #7a1cac;
+            --accent-color: #ad49e1;
+            --text-color: #ebd3f8;
+        }
+
+        body {
+            margin: 50px;
+            font-family: 'Source Code Pro', monospace;
+            background-color: #0d0d0d;
+            color: var(--text-color);
+            line-height: 1.8;
+            padding: 2rem;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--accent-color);
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+        }
+
+        pre {
+            background-color: #3e1a56;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            margin-top: 0;
+        }
+
+        code {
+            color: #fff;
+            background-color: #471a5a;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        strong {
+            color: var(--accent-color);
+        }
+
+        .box {
+            margin-top: 15px;
+            border: 1px solid white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 2px solid var(--accent-color);
+            margin: 20px 0;
+        }
+
+        .caption {
+            font-size: 0.95rem;
+            color: #ccc;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+      body {
+        padding: 1rem 1.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        padding-left: 0.75rem;
+      }
+
+      p, li {
+        font-size: 0.95rem;
+      }
+
+      .box {
+        padding: 15px;
+      }
+
+      pre {
+        font-size: 0.85rem;
+      }
+
+      .caption {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1px;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+        padding-left: 0.5rem;
+      }
+
+      p, li {
+        font-size: 0.9rem;
+      }
+
+      pre {
+        font-size: 0.8rem;
+      }
+
+      .box {
+        padding: 10px;
+      }
+
+      .caption {
+        font-size: 0.8rem;
+      }}
+    </style>
+</head>
+
+<body>
+    <h1>QuadHash: Structuring Restaurant Data with Spatial Precision</h1>
+
+    <div class="box">
+        <h2>Introduction: Speed, Scale, and the Hidden Challenge</h2>
+        <p>
+            In the age of instant gratification, every second counts. When a user opens a food-delivery app, they expect
+            a crisp, responsive list of nearby restaurants—no spinning wheels, no long pauses. Yet behind this simple
+            request lies a complex challenge: how to query <strong>“all restaurants within R kilometers”</strong> in a
+            massive, dynamically changing dataset without choking on latency.
+        </p>
+        <p>
+            Restaurants open and close hourly, some clusters of eateries appear overnight, and thousands of users may be
+            querying at once during peak dinner hours. Two popular spatial-indexing
+            techniques—<strong>Geohashing</strong> and <strong>Quadtrees</strong>—tackle this problem from different
+            angles:
+        </p>
+        <ul>
+            <li><strong>Geohashing:</strong> Divides the map into a fixed grid of rectangles (cells), each keyed by a
+                short alphanumeric prefix.</li>
+            <li><strong>Quadtrees:</strong> Slice the map adaptively, subdividing only where restaurants are dense and
+                merging when they dissipate.</li>
+        </ul>
+        <p>
+            Below, we’ll explore each method in turn, highlight their strengths and pain points, and show—through actual
+            illustrations—why <strong>quadtrees often win</strong> in fast-moving, high-density environments.
+        </p>
+    </div>
+
+
+    <div class="box">
+        <h2>2. The Challenge with Naive Distance Filtering</h2>
+        <p>
+            Suppose we want to find all restaurants within a <strong>1 km radius</strong> of a user. A straightforward
+            approach would be to loop through all restaurants in the database and compute the distance between the
+            user’s location and each one using the <strong>Haversine formula</strong>—which accounts for Earth's
+            curvature.
+        </p>
+        <p>
+            While accurate, this approach comes at a steep cost: it runs in <code>O(n)</code> time, where <code>n</code>
+            is the total number of restaurants. That’s fine if you’re handling a few hundred locations. But in the real
+            world, where cities may have tens of thousands of listings, and thousands of users may be querying in
+            parallel, this becomes painfully slow.
+        </p>
+        <p>
+            For example, during a busy dinner rush, your backend may be hit with <strong>50K+ requests per
+                minute</strong>. Checking each request against every restaurant would overwhelm even powerful
+            machines—and lead to dreaded loading spinners for the end-user.
+        </p>
+        <p>
+            To make this real-time and scalable, we need a smarter approach. One that <strong>partitions space
+                efficiently</strong>, filters out irrelevant data early, and allows us to localize queries without
+            scanning everything. That's where spatial indexing structures like <code>Geohashing</code> and
+            <code>Quadtrees</code> come in.
+        </p>
+    </div>
+
+
+    <div class="box">
+        <h2>3. Geohashing: Bucketing into Fixed Grid Cells</h2>
+
+        <h3>3.1 How Geohashing Works</h3>
+        <p>
+            Geohashing encodes every latitude/longitude coordinate into a short base-32 string, such as
+            <code>"w886hud"</code>. That string represents a rectangular cell on the Earth’s surface. As you add more
+            characters, the cell becomes smaller and more precise:
+        </p>
+        <ul>
+            <li>A 2-character geohash might cover tens of kilometers</li>
+            <li>A 5-character geohash typically spans around <strong>1 km × 1 km</strong></li>
+            <li>A 7-character geohash narrows it down to roughly <strong>150 m × 150 m</strong></li>
+        </ul>
+        <p>
+            All restaurants whose coordinates fall within that rectangle share the same prefix. In practice, a 5- or
+            6-character length is often chosen to strike a balance between granularity and bucket size.
+        </p>
+
+        <div style="text-align:center; margin-top: 1.5rem; margin-bottom: 1.5rem;">
+            <img src="/image/geohash.png" alt="Geohash grid overlay" width="400"
+                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure 1.</strong> A geohash overlay (cells labeled “w886hu0,” “w886hu1,” etc.). Each cell is
+                roughly 1 km² at this precision.
+            </p>
+        </div>
+
+        <p>
+            In Figure 1, each blue rectangle corresponds to a geohash cell of fixed size. Every pizzeria inside a given
+            cell shares that cell’s string prefix.
+        </p>
+
+        <h3>3.2 Storing and Querying Restaurants</h3>
+        <p>
+            Each restaurant is bucketed based on its geohash prefix:
+        </p>
+
+        <pre><code>HashMap&lt;string, List&lt;Restaurant&gt;&gt;  
+    Key   = geohash prefix (length L)  
+    Value = list of restaurants in that cell</code></pre>
+
+        <p><strong>Insertion / Deletion:</strong></p>
+        <ul>
+            <li>Compute <code>code = geoEncode(lat, lon, L)</code>, which takes <code>O(L)</code> time.</li>
+            <li>Append or remove the restaurant from <code>bucket[code]</code> in amortized <code>O(1)</code> time.</li>
+        </ul>
+
+        <p><strong>Range Query (“Nearby Restaurants within R”):</strong></p>
+        <ol>
+            <li>Encode the user’s location: <code>userCode = geoEncode(uLat, uLon, L)</code></li>
+            <li>Identify up to 8 neighboring cells (N, S, E, W, NE, NW, SE, SW)</li>
+            <li>For each of those 9 cells (including <code>userCode</code>):</li>
+            <ul>
+                <li>Retrieve all restaurants from <code>bucket[cell]</code></li>
+                <li>Use Haversine distance to filter by radius R</li>
+            </ul>
+            <li>Sort the results by distance (and optionally rating, delivery time)</li>
+        </ol>
+
+        <p>
+            In a suburban area where each cell has around <code>b = 50</code> restaurants, the system performs about
+            <code>9 × 50 = 450</code> distance checks—quite acceptable. But things quickly get out of hand in dense
+            urban centers.
+        </p>
+
+        <h3>3.3 When Geohashing Stumbles</h3>
+        <p>
+            In high-density city blocks, a single geohash cell can contain over <code>1,000+</code> venues. One query
+            might now need <code>9,000+</code> Haversine checks just to get started—far too slow for real-time systems.
+        </p>
+
+        <p><strong>Key pain points include:</strong></p>
+        <ul>
+            <li>
+                <strong>Hot Buckets:</strong> Popular downtown areas can fill a single geohash bucket with thousands of
+                restaurants, making every query an expensive brute-force scan.
+            </li>
+            <li>
+                <strong>Fixed-size Trade-off:</strong> Choosing cell size is tricky:
+                <ul>
+                    <li>If cells are too large, they include many irrelevant far-away results.</li>
+                    <li>If cells are too small, the number of lookups balloons.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Boundary Overhead:</strong> Users near a cell boundary might need to scan up to <code>16</code>
+                surrounding cells just to avoid missing restaurants—most of which may be empty.
+            </li>
+            <li>
+                <strong>No Self-Balancing:</strong> Geohash buckets don't split when they overflow. You must manually
+                increase geohash precision (length <code>L+1</code>), which is an expensive and reactive operation.
+            </li>
+        </ul>
+
+        <p>
+            Due to these limitations, geohashing works best in environments with relatively uniform density and where
+            buckets rarely exceed a few dozen entries. For fast-moving, high-density urban maps, we need something more
+            flexible.
+        </p>
+    </div>
+
+
+    <div class="box">
+        <h2>4. Quadtrees: Adaptive Subdivision for Fast Pruning</h2>
+
+        <h3>4.1 Quadtree Concept</h3>
+        <p>
+            Quadtrees solve the “hot bucket” problem by subdividing space only where necessary. Instead of a fixed grid,
+            we start with a single root rectangle covering the entire service area. Each node (rectangular region) holds
+            up to <strong>capacity</strong> (e.g., 4) restaurant points. When a node exceeds this limit, it splits into
+            four quadrants—NE, NW, SE, and SW—and redistributes its points. This subdivision recurses until all leaves
+            hold ≤ capacity points.
+        </p>
+
+        <p><strong>Node Structure:</strong></p>
+        <pre><code>QuadNode {
+  bounds: (lat_min, lat_max, lon_min, lon_max)
+  isLeaf: boolean
+  if (isLeaf) {
+    points: list of (lat, lon, ID)  // up to capacity
+  } else {
+    children[4]: pointers to NE, NW, SE, SW QuadNodes
+  }
+}</code></pre>
+
+        <p><strong>Insertion:</strong></p>
+        <ul>
+            <li>If <code>node.isLeaf</code> and <code>points.size &lt; capacity</code>, append to <code>points</code>.
+            </li>
+            <li>If <code>points.size == capacity</code>, split the node:
+                <ul>
+                    <li>Compute midpoints: <code>lat_mid = (lat_min + lat_max) / 2</code>,
+                        <code>lon_mid = (lon_min + lon_max) / 2</code>
+                    </li>
+                    <li>Create four children with new bounding boxes</li>
+                    <li>Redistribute all existing + new point into the appropriate child</li>
+                </ul>
+            </li>
+            <li>If internal node, recurse into the correct child</li>
+        </ul>
+
+        <div style="text-align:center; margin: 1.5rem 0;">
+            <img src="/image/case-2-quad.png" alt="QuadTree subdivision and tree" width="auto"
+                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 2.</strong> (Left) Restaurants plotted on a map
+                in various colored squares. Dense clusters force deeper subdivisions. (Right) The corresponding
+                quadtree, where each square node holds at most “capacity” restaurants, splitting further as needed.</p>
+        </div>
+
+        <h3>4.2 Range Queries with Bounding-Box Pruning</h3>
+        <p>
+            When a user at <code>(uLat, uLon)</code> asks for restaurants within radius <code>R</code>, the quadtree
+            performs:
+        </p>
+
+        <pre><code>function rangeQuery(node, uLat, uLon, R, results):
+  if not intersectsCircle(node.bounds, uLat, uLon, R):
+    return  // prune this subtree
+
+  if node.isLeaf:
+    for each (plat, plon, restID) in node.points:
+      if haversine(uLat, uLon, plat, plon) ≤ R:
+        results.append(restID)
+  else:
+    for child in node.children:
+      rangeQuery(child, uLat, uLon, R, results)
+
+function intersectsCircle(bounds, uLat, uLon, R):
+  (la_min, la_max, lo_min, lo_max) = bounds
+  clampedLat = clamp(uLat, la_min, la_max)
+  clampedLon = clamp(uLon, lo_min, lo_max)
+  d = haversine(uLat, uLon, clampedLat, clampedLon)
+  return (d ≤ R)</code></pre>
+
+        <p>
+            The key insight: if a node’s bounding box doesn’t intersect the user’s query circle, we can ignore it and
+            its entire subtree—potentially skipping thousands of points instantly.
+        </p>
+
+        <h4>4.2.1 Example of Pruning</h4>
+        <p>
+            If the root covers <code>[0,100] × [0,100]</code> and the user’s 5 km radius is inside
+            <code>[0,50] × [50,100]</code>, only the “Downtown” quadrant intersects the circle. The other three
+            quadrants—Suburb, Rural, Outskirts—are pruned entirely, regardless of how many restaurants they contain.
+        </p>
+        <p>
+            The pruning continues recursively. Eventually, we touch just a handful of leaves—each with ≤ capacity
+            points—making only a few Haversine computations.
+        </p>
+
+        <h3>4.3 Automatically Merging After Closures</h3>
+        <p>
+            When a restaurant closes, the tree removes it from its leaf node. Then comes the merge check:
+        </p>
+        <ul>
+            <li>If all four sibling leaves together hold ≤ capacity points, collapse them into their parent:</li>
+            <ul>
+                <li>Gather all points into parent’s list</li>
+                <li>Delete children and mark parent as leaf</li>
+            </ul>
+        </ul>
+        <p>
+            This avoids fragmentation and keeps the tree shallow and balanced.
+        </p>
+
+        <div style="text-align:center; margin: 1.5rem 0;">
+            <img src="/image/case-2-quad-rebuild.png" alt="QuadTree merge process" width="auto"
+                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 3.</strong> (Left) Before closure: Parent’s four
+                children hold various numbers of restaurants. (Right) After one restaurant closes, all four children
+                together hold ≤ capacity, so they merge into the parent’s single leaf.</p>
+        </div>
+
+        <h3>4.4 Performance Characteristics</h3>
+        <p><strong>Insertion / Deletion:</strong></p>
+        <ul>
+            <li><code>O(log N)</code> average (tree depth ~ log₄ N)</li>
+            <li><code>O(N)</code> worst-case (e.g., all points lie on a diagonal)</li>
+        </ul>
+
+        <p><strong>Range Query (“Nearby within R”):</strong></p>
+        <ul>
+            <li><code>O(log N + m)</code> average, where <code>m</code> = number of results</li>
+            <li><code>O(N)</code> worst-case (if R is large or tree poorly balanced)</li>
+        </ul>
+
+        <p><strong>Merge (Post-Deletion):</strong></p>
+        <ul>
+            <li><code>O(capacity × 4)</code> to check + <code>O(capacity)</code> to move → effectively constant time
+            </li>
+        </ul>
+
+        <p>
+            In practice, busy city blocks keep splitting until leaves have only a few points (e.g., 4 or 8). A “within 3
+            km” query touches just a few such leaves, making quadtrees ideal for dynamic, high-density applications
+            where geohashing may lag.
+        </p>
+    </div>
+
+
+    <div class="box">
+        <h2>5. Putting It All Together</h2>
+
+        <p>
+            Through these two techniques, we observe a clear trade-off:
+        </p>
+
+        <h3>Geohashing</h3>
+        <ul>
+            <li><strong>Pros:</strong> Simplicity (<code>O(1)</code> updates, fixed-size buckets), easy to implement.
+            </li>
+            <li><strong>Cons:</strong> Hot buckets in dense areas, fixed resolution mismatches, boundary overhead, no
+                self-balancing.</li>
+        </ul>
+
+        <h3>Quadtrees</h3>
+        <ul>
+            <li><strong>Pros:</strong> Adaptive subdivision (no oversized leaves), powerful bounding-box pruning,
+                automatic merges when clusters thin out.</li>
+            <li><strong>Cons:</strong> Slightly more complex to implement, <code>O(log N)</code> updates, potential
+                worst-case degeneracy if not tuned.</li>
+        </ul>
+
+        <p>
+            In a real‐world food-delivery scenario—especially in a major city where restaurants pop up and close
+            frequently—a <strong>quadtree</strong> often provides more consistent, low-latency performance. Once the
+            tree is built, typical <em>“find all restaurants within X km”</em> requests examine only a few leaves (maybe
+            4–8 points each), rather than scanning hundreds or thousands in a single geohash bucket.
+        </p>
+    </div>
+
+    <div class="box">
+        <h2>6. Conclusion</h2>
+        <p>
+            When a hungry user demands pizza in under a second, every millisecond of server time counts.
+            <strong>Geohashing</strong> offers a quick setup—bucketing coordinates into fixed cells—but falls short as
+            city blocks densify.
+            <strong>Quadtrees</strong>, by contrast, elegantly “zoom in” where restaurants cluster, prune far-flung
+            areas in one bounding-box test,
+            and merge back when eateries shut down.
+        </p>
+        <p>
+            The result is a spatial index that adapts to real-time demands, keeps leaf nodes small,
+            and preserves <strong>sub-50 ms query times</strong> even during dinner rush.
+        </p>
+        <p>
+            By following the illustrations in <em>Figures 1–3</em> and understanding the core ideas—
+            <strong>fixed vs. adaptive grids, bucket scanning vs. pruning, split vs. merge operations</strong>—
+            you’ll be well equipped to choose (or combine) the right indexing strategy for your next high-performance,
+            location-based application.
+        </p>
+    </div>
+
+
+</body>
+
+</html>

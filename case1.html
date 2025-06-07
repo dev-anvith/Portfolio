@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FOODMATCH Case Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e073f;
+            --secondary-color: #7a1cac;
+            --accent-color: #ad49e1;
+            --text-color: #ebd3f8;
+        }
+
+        body {
+            margin: 50px;
+            font-family: 'Source Code Pro', monospace;
+            background-color: #0d0d0d;
+            color: var(--text-color);
+            line-height: 1.8;
+            padding: 2rem;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--accent-color);
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+        }
+
+        pre {
+            background-color: #3e1a56;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            margin-top: 0;
+        }
+
+        code {
+            color: #fff;
+            font-family: 'Source Code Pro', monospace;
+            background-color: #471a5a;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        strong {
+            color: var(--accent-color);
+        }
+
+        .box {
+            margin-top: 15px;
+            border: 1px solid white;
+            padding: 10px;
+        }
+
+        .batching {
+            height: 80%;
+            width: 70%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                text-align: center;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                padding-left: 0.75rem;
+            }
+
+            p,
+            li {
+                font-size: 0.95rem;
+            }
+
+            .box {
+                padding: 15px;
+            }
+
+            pre {
+                font-size: 0.85rem;
+            }
+
+            .caption {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+                padding-left: 0.5rem;
+            }
+
+            p,
+            li {
+                font-size: 0.9rem;
+            }
+
+            pre {
+                font-size: 0.8rem;
+            }
+
+            .box {
+                padding: 10px;
+            }
+
+            .caption {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Delivering Smarter: How FOODMATCH Is Revolutionizing Food Delivery</h1>
+    <div class="box">
+        <h2>1. Introduction: From Chaos to Coordination</h2>
+        <p>
+            Every minute, thousands of food orders are placed across cities. Customers expect them fast and fresh. But
+            behind the scenes, delivery platforms must solve complex logistical challenges in real time: routing,
+            preparation time, traffic, and rider availability. This case study explores <strong>FOODMATCH</strong>—an
+            intelligent system designed to bring order to this chaos using cutting-edge algorithms.
+        </p>
+        <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+            <img src="/image/PIPELINE (1).png" alt="FOODMATCH Architecture"
+                style="max-width: 100%; border-radius: 8px; border: 2px solid #ad49e1;" />
+
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure:</strong> High-level architecture of FOODMATCH showing how orders are batched, filtered
+                using spatial intelligence, and matched to riders using optimization.
+            </p>
+        </div>
+
+
+
+    </div>
+
+    <div class="box">
+        <h2>2. Why Naïve Logic Fails in a Fast-Moving World</h2>
+        <p>
+            Traditional delivery platforms often rely on the simplest strategy: assign the nearest available rider to a
+            new
+            order. Known as the <em>greedy approach</em>, this method doesn't account for preparation time, future
+            orders,
+            or delivery overlaps.
+        </p>
+        <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+            <img src="/image/GREEDY-APS (1) (1).jpg" alt=""
+                style="max-width: 100%; border-radius: 8px; border: 2px solid #ad49e1;">
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure:</strong> Graph illustrating why greedy approach is suboptiaml
+            </p>
+            <p>
+        </div>
+
+        For example, suppose an order is placed at <strong>R3</strong>, and the closest rider is at
+        <strong>R5</strong>.
+        The greedy system routes the rider directly to R3 via R4. If the travel time is 7 minutes but the food takes
+        12
+        minutes to prepare, the rider ends up waiting idly for 5 minutes—time that could’ve been used to fulfill
+        other
+        orders.
+        </p>
+        <p>
+            To quantify this inefficiency, we define <strong>Extra Delivery Time (XDT)</strong>:
+        </p>
+        <pre><code>XDT(o, v) = max(current_time + travel_time_to_restaurant, food_prep_time)
+             + travel_time_to_customer
+             - ideal_delivery_time(o)</code></pre>
+        <p>
+            Lower XDT values indicate more efficient assignments. Greedy methods fail to optimize this, especially under
+            scale.
+        </p>
+
+    </div>
+
+    <div class="box">
+        <h2>3. Batching Orders the Smart Way: FOODMATCH’s Core Insight</h2>
+        <p>
+            FOODMATCH introduces intelligent batching to address these inefficiencies. Instead of dispatching a rider
+            immediately, it waits briefly to find other nearby orders that can be delivered together.
+        </p>
+        <p>
+            Each order is represented as a node in a graph. Edges connect orders that could potentially be grouped. The
+            <strong>marginal cost</strong> of combining two orders <code>i</code> and <code>j</code> is calculated as:
+        </p>
+        <pre><code>mCost(i, j) = Cost(v, i ∪ j) - (Cost(v, i) + Cost(v, j))</code></pre>
+        <p>
+            If this cost is below a threshold, the orders are merged. FOODMATCH performs iterative clustering by
+            repeatedly
+            merging the most efficient pairs until no further improvements can be made.
+        </p>
+        <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+            <img class="batching" src="/image/batching.png" alt=""
+                style="max-width: 100%; border-radius: 8px; border: 2px solid #ad49e1;">
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure:</strong> Batching of orders in iterations
+            </p>
+            <p>
+        </div>
+
+        <p>
+            This process results in compact, efficient batches that reduce delivery time, fuel use, and rider idle time.
+        </p>
+        <details>
+            <summary><strong>Pseudocode & Complexity</strong></summary>
+            <pre><code>
+// Inputs:
+//   windowSize – Accumulation window for incoming orders
+//   qualityThreshold – Cutoff value for average cost to stop merging
+// Outputs:
+//   finalBatches – List of grouped orders (batches)
+//   routePlans – Optimized route plans for each batch
+
+1.  round = 0
+2.  batches[0] = initial individual orders grouped as one order per batch
+3.  weights[0] = pairwise cost of merging each batch
+4.  graph[0] = { batches[0], weights[0] }
+
+5.  while true:
+6.      if averageCost(graph[round]) / numberOfBatches > qualityThreshold:
+7.          break
+
+8.      (i, j) = findLowestMergeCostPair(weights[round])
+
+9.      if size(batches[i]) + size(batches[j]) > maxOrdersAllowed:
+10.         continue
+
+11.     mergedRoute = computeOptimalRoute(batches[i], batches[j])
+12.     mergedBatch = combineOrders(batches[i], batches[j])
+
+13.     batches[round + 1] = batches[round]
+         - remove batches[i] and batches[j]
+         + add mergedBatch
+
+14.     weights[round + 1] = recalculateWeightsFor(mergedBatch)
+
+15.     graph[round + 1] = { batches[round + 1], weights[round + 1] }
+16.     round += 1
+
+17. finalBatches = extractOrdersFrom(batches[round])
+18. routePlans = extractRoutesFrom(batches[round])
+19. return finalBatches, routePlans
+
+// Time Complexity:
+//   Let n be the number of orders in the window.
+//   - Initial pairwise cost computation: O(n^2)
+//   - In each round: merging + route computation ~ O(n)
+//   - Number of rounds: O(n)
+//   Overall: O(n^2) due to pairwise merging and recomputation
+</code></pre>
+        </details>
+
+    </div>
+    <div class="box">
+        <h2>4. Making the Match: Intelligent Graph Construction with Directional Awareness</h2>
+        <p>
+            Once the batching process is complete, the system now has two sets to work with: a set of
+            <strong>batches</strong> (each containing one or more orders) and a set of <strong>active delivery
+                vehicles</strong>. The challenge now is to assign the most suitable rider to each batch. This is where
+            FOODMATCH builds the <strong>FOODGRAPH</strong> — a bipartite graph between batches and delivery partners.
+        </p>
+        <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+            <img src="/image/FOODGRAPH (1).png" alt=""
+                style="max-width: 100%; border-radius: 8px; border: 2px solid #ad49e1;">
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure:</strong> Construction of Bi-partite graph and sparsification for computational
+                efficiency
+            </p>
+            <p>
+        </div>
+        <p>
+            In this graph, an <em>edge</em> connects a batch to a rider, with the <strong>edge weight</strong>
+            representing
+            the cost of that assignment. However, calculating edge weights between all possible pairs of riders and
+            batches
+            is computationally expensive, especially in real-time environments.
+        </p>
+        <p>
+            To tackle this, FOODMATCH uses a combination of <strong>Best-First Search</strong> and a spatial concept
+            known
+            as <strong>Angular Distance</strong> to intelligently prune the graph and reduce its size without losing
+            matching quality.
+        </p>
+
+        <h3>Efficient Pruning with Best-First Search</h3>
+        <p>
+            For each rider, a <code>best-first search</code> is performed from their current location to discover nearby
+            batches in the road network. This helps prioritize geographically feasible assignments and avoids wasting
+            computation on distant or irrelevant options.
+        </p>
+
+        <h3>Directional Relevance Using Angular Distance</h3>
+        <p>
+            Proximity alone isn’t enough. A batch might be physically close but in the opposite direction of a rider’s
+            movement. FOODMATCH calculates the <strong>Angular Distance</strong> between a rider’s heading and the
+            direction
+            to a batch. Only batches that fall within a logical travel cone are considered for assignment.
+        </p>
+        <p>
+            Consider the rider heading toward batch <strong>B3</strong>. A new batch <strong>B6</strong> is physically
+            close to the rider’s position. However, if accepting B6 requires the rider to turn back or make a
+            significant directional deviation, it may not be worth it—even if the distance is short.
+        </p>
+        <p>
+            This is where <strong>Angular Distance</strong> comes into play. It evaluates not just how far the batch is,
+            but whether it's aligned with the rider’s current direction of motion. If the angle between the rider’s
+            heading and the direction to the new batch exceeds a threshold, the batch is excluded from consideration.
+        </p>
+
+        <p>
+            In the illustration below, B6 is skipped in favor of B3 because including B6 would require a reverse move,
+            leading to inefficiencies.
+        </p>
+        <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+            <img src="/image/angular (1).png" alt=""
+                style="max-width: 100%; border-radius: 8px; border: 2px solid #ad49e1;">
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure:</strong> Impact of Angular Distance
+            </p>
+            <p>
+        </div>
+        <p>
+            These two techniques allow the system to build a <strong>sparsified FOODGRAPH</strong> with a limited number
+            of
+            high-potential edges per rider — dramatically reducing computation while preserving smart, context-aware
+            decision making.
+        </p>
+        <details>
+             <summary><strong>Pseudocode & Complexity</strong></summary>
+
+            <pre><code>
+// Inputs:
+//   vehicles – Set of available delivery vehicles
+//   batches – Set of order batches
+//   maxDegree – Maximum number of batches each vehicle should connect to
+//   currentTime – Current system time
+//   roadGraph – Underlying road network graph G(V, E)
+
+// Output:
+//   Bipartite graph B = (vehicles, batches, edges)
+
+1.  Initialize an empty bipartite graph B with vehicles on one side, batches on the other.
+2.  For each vehicle v in vehicles:
+3.      source = getCurrentLocation(v, currentTime)
+4.      PQ = empty priority queue
+5.      PQ.insert(source, cost=0)
+6.      Mark all batches as unvisited
+7.      matchedBatches = []
+
+8.      While PQ is not empty and matchedBatches < maxDegree:
+9.          u = PQ.pop()
+10.         If u is already visited, skip
+11.         Mark u as visited
+12.         candidateBatches = getNearbyBatches(u)
+
+13.         For each batch i in candidateBatches:
+14.             Add edge from v to i in graph B with calculated edge weight (based on delivery cost)
+15.         End For
+
+16.         matchedBatches += candidateBatches
+17.         neighbors = getUnvisitedNeighbors(u, roadGraph)
+18.         For each neighbor n in neighbors:
+19.             PQ.insert(n, estimatedCostTo(n))
+20.         End For
+21.  End For
+
+22. Return sparsified bipartite graph B
+
+// Time Complexity:
+//   Let V be the number of vehicles, B be the number of batches, and N be the number of nodes in the roadGraph.
+//   - For each vehicle, a modified Dijkstra's traversal is done up to maxDegree batches.
+//   - Assuming batch lookup and edge insertion takes O(1) per batch, and neighbor expansion is bounded:
+//     -> Per vehicle: O(maxDegree * log N)
+//   - Total: O(V * maxDegree * log N), assuming batch density is reasonable and traversal doesn't visit all nodes.
+</code></pre>
+        </details>
+
+    </div>
+    <div class="box">
+        <h2>5. The Final Match: How FOODMATCH Optimizes Assignments</h2>
+        <p>
+            After batching and building a sparsified FOODGRAPH, the final step is to decide which delivery partner
+            should be assigned to which batch. This isn’t just a matching problem—it’s an <strong>optimization</strong>
+            problem.
+        </p>
+
+        <p>
+            FOODMATCH uses the <strong>Kuhn-Munkres Algorithm</strong> (also known as the <em>Hungarian Algorithm</em>)
+            to find a <em>minimum-cost perfect matching</em> between riders and batches. Unlike greedy methods that
+            assign the closest batch or first available option, this algorithm considers the entire system and produces
+            the most efficient overall outcome.
+        </p>
+
+        <h3>What Is a Minimum-Cost Perfect Matching?</h3>
+        <p>
+            In a bipartite graph (like our FOODGRAPH), a <em>perfect matching</em> is a one-to-one assignment between
+            nodes on both sides—in our case, each batch is matched to one rider, and vice versa. The goal is to find
+            such a matching that <strong>minimizes the total cost</strong> across all assignments.
+        </p>
+
+        <p>
+            The Hungarian algorithm ensures that each rider is matched to the most cost-effective batch, taking into
+            account factors like delivery time, current direction, and overall system efficiency—not just proximity.
+        </p>
+<details>
+        <summary><strong>Pseudocode & Complexity</strong></summary>
+
+        <pre><code>
+// Conceptual view of the assignment step
+for each batch b in B:
+    for each rider r in R:
+        compute cost(r, b)
+construct bipartite graph G(R, B, cost)
+apply Kuhn-Munkres to find min-cost perfect matching
+assign riders based on optimal match
+
+// Time Complexity:
+//   Let n = max(|R|, |B|)
+//   - Cost matrix computation: O(n^2)
+//   - Kuhn-Munkres (Hungarian Algorithm): O(n^3)
+//   Overall: O(n^3), where n is the number of riders or batches (whichever is larger)
+</code></pre></details>
+
+        <h3>Why This Matters</h3>
+        <p>
+            This approach avoids local optima and considers the bigger picture. Even if a batch is closer to one rider,
+            it might be better assigned to another if it allows better overall routing for the fleet. That’s the real
+            power of optimization over simple heuristics.
+        </p>
+
+        <p>
+            With this final step, FOODMATCH ties together intelligent batching, spatial pruning, and mathematical
+            optimization into a real-time, scalable dispatch engine.
+        </p>
+
+    </div>
+    <div class="box">
+        <h2>8. Conclusion: Rethinking Real-Time Logistics</h2>
+        <p>
+            Online food delivery may look simple on the surface, but behind every successful delivery is a system
+            solving complex optimization problems in real time. <strong>FOODMATCH</strong> showcases how thoughtful
+            system design, backed by algorithms and real-world constraints, can significantly improve efficiency and
+            scalability.
+        </p>
+
+        <p>
+            From avoiding the pitfalls of greedy assignment to building intelligent batches, sparsifying graphs for
+            speed, and using the Kuhn-Munkres algorithm for optimal matching, FOODMATCH integrates multiple layers of
+            logic to deliver more than just meals—it delivers efficiency, adaptability, and customer satisfaction.
+        </p>
+
+        <p>
+            As cities grow and expectations for faster, more reliable service rise, such systems demonstrate the future
+            of distributed, dynamic logistics. FOODMATCH isn’t just about food delivery—it’s a blueprint for any domain
+            where time-sensitive, resource-constrained dispatch matters.
+        </p>
+
+        <p style="font-style: italic; color: #aaa;">
+            In a world where time is the most perishable resource, smart delivery is more than convenience—it's a
+            competitive edge.
+        </p>
+
+    </div>
+</body>
+
+</html>

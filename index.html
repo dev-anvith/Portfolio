@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anvith's Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/46c6321ff5.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
     <header>
         <div class="nav-bar">
@@ -16,75 +20,135 @@
                 <h1>MySpace</h1>
             </div>
             <div class="nav-links">
-
                 <a href="blog.html">MyBlogs</a>
-            </div>   
-        <div>  
+            </div>
+        </div>
     </header>
 
-    <main-container>
-        <div class="landing-screen">
+    <main>
+        <section class="landing-screen">
             <div class="my-intro">
                 <div class="my-intro-text">
                     <h1>I'm <span class="highlight">Anvith</span></h1>
-                    <p>Well equipped with the knowledge of C++, front end technologies and problem solving. Currently expanding my skills into full-stack development and machine learning domain.</p>
+                    <p>Well equipped with the knowledge of C++, backend technologies, and problem solving. With
+                        experience in both Machine Learning and Software Development, I’m passionate about staying
+                        updated with current tech trends and continuously evolving every day.</p>
                     <div class="contact-links">
-                        <a href="" class="insta"> <i class="fa-brands fa-instagram"></i>
-                        </a>
+                        <a href="" class="insta"><i class="fa-brands fa-instagram"></i></a>
                         <a href="" class="x"><i class="fa-brands fa-x-twitter"></i></a>
                         <a href="" class="linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="my-intro-image">
-                    <img src="image/WrQQL1W6_400x400.jpg" alt="">
+                    <img src="image/WrQQL1W6_400x400.jpg" alt="Anvith Profile Image">
                 </div>
             </div>
-            <div class="journey"></div>
-             <h2 class="section-heading " >#My Experience</h2>
+
+            <div class="journey">
+                <h2 class="section-heading">#My Experience</h2>
                 <div class="road-map">
                     <div class="roadmap-line"></div>
-                
+
                     <div class="milestone left">
-                        <h3>Milestone 1</h3>
-                        <p>First achievement</p>
+                        <h3>Make in BVB</h3>
+                        <h5>Oct 2024 - Present</h5>
+                        <p>Software Developer at MiB (Make in BVB), the college’s premier entrepreneurship club.
+                            Contributed to building tech solutions for events, competitions, and startup initiatives.
+                        </p>
                     </div>
-                
+
                     <div class="milestone right">
-                        <h3>Milestone 2</h3>
-                        <p>Second achievement.</p>
+                        <h3>Samsung Prism</h3>
+                        <h5>Nov 2024 - May 2025</h5>
+                        <p>Project Intern at Samsung Research Institute – Bangalore, where I worked on voice activation
+                            systems focused on keyword spotting for wake words like “OK Google” and “Hey Siri.”</p>
                     </div>
-                
+
                     <div class="milestone left">
-                        <h3>Milestone 3</h3>
-                        <p>Third achievement.</p>
+                        <h3>TrustNet</h3>
+                        <h5>April 2025 - Present</h5>
+                        <p>Working on TrustNet, a side project with startup potential that offers real-time social
+                            proofing services. Built an MVP to help websites display live user activity and boost
+                            credibility.</p>
                     </div>
-                
+
                     <div class="milestone right">
                         <h3>Milestone 4</h3>
-                        <p>Fourth achievement.</p>
+                        <p>Coming soon.</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section class="projects">
+            <h2 class="section-heading">#Projects Worth Sharing</h2>
+            <div id="projects-container">
 
             </div>
-            <div class="projects">
-                <h2 class="section-heading">#Projects Worth Sharing</h2>
-                <div id="projects-container"></div>
-                    <!-- Reusable project blocks will be added here -->
+        </section>
+
+        <section class="case-studies">
+            <h2 class="section-heading">#AlgoRhythms Around Us</h2>
+            <div class="motivation">
+                <h2>Motivation :</h2>
+                <p>A deep dive behind the scenes of Online Food Delivery—exploring the smart algorithms and design
+                    strategies that keep your meals hot, fresh and delivered on time.</p>
+            </div>
+            <div class="case-study-links" id="projects-container">
+
+                <div class="project-block" style="height: fit-content;">
+                    <h3>FOODMATCH - Delivery Partner Assignment</h3>
+                    <p>Assigning delivery partners to batches is a classic NP-Hard optimization problem due to its
+                        combinatorial nature.
+                        As the number of orders and riders increases, the number of possible assignments grows
+                        exponentially.
+                        FOODMATCH tackles this by using efficient graph-based algorithms to find near-optimal solutions
+                        in real time.</p>
+                    <button><a href="/case1.html">Read More</a></button>
+                </div>
+                <div class="project-block" style="height: fit-content;">
+
+                    <h3>QuadHash - Restuarant Fetching Algorithms</h3>
+                    <p>
+                        Finding nearby restaurants fast is tough when data changes constantly and users expect instant
+                        results. Geohashing uses fixed grids for quick lookups but can be inefficient in dense or uneven
+                        areas. Quadtrees adapt to data density, often making them the better choice for fast, dynamic
+                        food delivery queries.
+
+                    </p>
+                    <button><a href="/case2.html">Read More</a></button>
+
+                </div>
+                <div class="project-block" style="height: fit-content;">
+
+                    <h3>QuickScope - Optimized Range Lookups</h3>
+                    <p>
+                        Range queries retrieve data that falls within a specified interval or boundary—common in
+                        databases. Naïve approaches become slow, prompting the
+                        use of advanced structures like Segment Trees, Fenwick Trees, and Range Trees. These optimize
+                        both query and update times, enabling real-time responsiveness.
+
+
+                    </p>
+                    <button><a href="/case3.html">Read More</a></button>
+
                 </div>
             </div>
-            
-            <div class="contact">
-                <h2>let's connect and build <a class="my-mail" href="">anvithrh@gmail.com</a></h2>
-            </div>
-        </div>        
-        
-       
-    </main-container>
-    <footer><div>
-        <p>crafted by anvith <br> <p>version 0.1</p>
-    
-    </div></footer>
-    <script src="https://kit.fontawesome.com/46c6321ff5.js" crossorigin="anonymous"></script>
+        </section>
+
+        <section class="contact">
+            <h2>Let's connect and build <a class="my-mail" href="mailto:anvithrh@gmail.com">anvithrh@gmail.com</a></h2>
+        </section>
+    </main>
+
+    <footer>
+        <div>
+            <p>crafted by Anvith</p>
+            <p>version 0.2</p>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
 </body>
+
 </html>

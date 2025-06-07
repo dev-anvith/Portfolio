@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuadHash Case Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e073f;
+            --secondary-color: #7a1cac;
+            --accent-color: #ad49e1;
+            --text-color: #ebd3f8;
+        }
+
+        body {
+            margin: 50px;
+            font-family: 'Source Code Pro', monospace;
+            background-color: #0d0d0d;
+            color: var(--text-color);
+            line-height: 1.8;
+            padding: 2rem;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--accent-color);
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+        }
+
+        pre {
+            background-color: #3e1a56;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            margin-top: 0;
+        }
+
+        code {
+            color: #fff;
+            background-color: #471a5a;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        strong {
+            color: var(--accent-color);
+        }
+
+        .box {
+            margin-top: 15px;
+            border: 1px solid white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 2px solid var(--accent-color);
+            margin: 20px 0;
+        }
+
+        .caption {
+            font-size: 0.95rem;
+            color: #ccc;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                text-align: center;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                padding-left: 0.75rem;
+            }
+
+            p,
+            li {
+                font-size: 0.95rem;
+            }
+
+            .box {
+                padding: 15px;
+            }
+
+            pre {
+                font-size: 0.85rem;
+            }
+
+            .caption {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1px;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+                padding-left: 0.5rem;
+            }
+
+            p,
+            li {
+                font-size: 0.9rem;
+            }
+
+            pre {
+                font-size: 0.8rem;
+            }
+
+            .box {
+                padding: 10px;
+            }
+
+            .caption {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Unlocking The Power of Range Queries</h1>
+    <div class="box">
+        <h2>1. Surge Detection using Kadane’s Algorithm</h2>
+
+        <h3>1.1 Introduction</h3>
+        <p>
+            In high-volume food-delivery services, understanding when order volumes spike is critical. Detecting these
+            <strong>“surge windows”</strong> allows platforms to dynamically allocate riders, adjust pricing, and
+            maintain high
+            service levels without over- or under-provisioning resources.
+        </p>
+        <p>
+            To efficiently identify contiguous periods of maximum order volume, many systems turn to
+            <strong>Kadane’s Algorithm</strong>—an <code>O(n)</code> time, <code>O(1)</code> space solution for the
+            classic
+            maximum-subarray problem.
+        </p>
+
+        <h3>1.2 Kadane’s Algorithm Overview</h3>
+        <p>
+            At its heart, Kadane’s Algorithm scans a one-dimensional array (e.g., minute-by-minute order counts) in a
+            single
+            pass, keeping track of the maximum sum ending at each position and the best overall sum seen so far.
+        </p>
+
+        <details>
+            <summary><strong>Pseudocode & Complexity</strong></summary>
+            <pre><code>max_so_far ← –∞
+max_ending_here ← 0
+
+for each x in A[1..n]:
+    max_ending_here ← max(x, max_ending_here + x)
+    max_so_far ← max(max_so_far, max_ending_here)
+
+return max_so_far
+Time Complexity: O(n) — one pass over the data
+Space Complexity: O(1) — only two scalar trackers
+</code></pre>
+        </details>
+
+        <h3>1.3 System Integration & Real-World Usage</h3>
+        <p>
+            In a production food-delivery platform, Kadane’s Algorithm doesn’t live in isolation—it’s a core part of an
+            event-driven streaming pipeline that continuously detects order surges and drives automated responses.
+        </p>
+        <div style="text-align:center; margin: 1.5rem 0;">
+            <img src="/image/Kadanes.png" alt="QuadTree subdivision and tree" width="auto"
+                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 2.</strong> A time frame of incoming orders,
+                which undergo a transformation where they are substracted by a number (moving average of the number of
+                order). Further the Kadanes Algorithm is performed on the resulting array.</p>
+        </div>
+
+        <h3>a. SurgeAnalyzer Service</h3>
+        <p>
+            A lightweight <code>SurgeAnalyzer</code> container pulls the current buffer slice and invokes Kadane’s
+            Algorithm—
+            scanning <code>n</code> counters in <code>O(n)</code> time (where <code>n</code> is small and fixed). It
+            returns the
+            optimal subarray <code>[i..j]</code> and the total orders within that window.
+        </p>
+        <p>
+            By running on each new minute (or at configurable intervals), it maintains real-time awareness of emerging
+            peaks
+            without ever scanning the entire day’s data.
+        </p>
+        <div style="text-align:center; margin: 1.5rem 0;">
+            <img src="/image/order-surge.png" alt="QuadTree subdivision and tree" width="auto"
+                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 2.</strong> Zone - A has a order surge which then
+                activates DispatchCoordinator service and SurgePricing service.</p>
+        </div>
+
+        <h3>b. DispatchCoordinator Orchestrator</h3>
+        <p>
+            The <code>DispatchCoordinator</code> listens to SurgeAnalyzer events and translates the surge window into
+            actionable
+            rider allocations.
+        </p>
+        <p>
+            For example, if Zone A’s last-hour buffer shows a 20-order surge between minutes 15–25, the service
+            computes:
+            <strong>“deploy 5 extra riders to Zone A at minute 25.”</strong>
+        </p>
+        <p>
+            These instructions flow into an operations API that triggers rider-assignment workflows and sends push
+            alerts to
+            driver apps.
+        </p>
+
+        <h3>c. SurgePricing Engine</h3>
+        <p>
+            Concurrently, the <code>SurgePricingEngine</code> receives the same surge window information. To avoid
+            sticker-shock, it applies a <strong>ramp-up function</strong>—gradually increasing delivery fees over a
+            <code>5–10 minute</code> span, capping at a configured maximum.
+        </p>
+        <p>
+            This smooth transition ensures customers see only modest, predictable price changes even during high-demand
+            windows.
+        </p>
+    </div>
+
+    <div class="box">
+        <h2>2. Segment Trees: Dynamic Range Queries</h2>
+
+        <h3>2.1 Introduction</h3>
+        <p>
+            In high-throughput systems—like food delivery or e-commerce platforms—data arrives and updates constantly.
+            Whether you're tracking inventory by category or aggregating metrics over time windows, the ability to query
+            and update
+            intervals <em>dynamically</em> and <em>efficiently</em> becomes critical. This is where
+            <strong>Segment Trees</strong> shine: a flexible, tree-based structure designed for fast, real-time
+            range queries and updates.
+        </p>
+
+        <h3>2.2 Segment Tree Overview</h3>
+        <p>
+            A segment tree is a binary tree built over an array, where each node stores a summary
+            (sum, min, max, etc.) of a subarray <code>[l..r]</code>. The root node covers the full array,
+            and each leaf corresponds to a single element.
+        </p>
+
+        <details>
+            <summary><strong>Pseudocode & Complexity</strong></summary>
+            <pre><code>// Build the segment tree
+function build(node, l, r):
+    if l == r:
+        Tree[node] ← A[l]
+    else:
+        mid ← (l + r) / 2
+        build(2*node, l, mid)
+        build(2*node+1, mid+1, r)
+        Tree[node] ← Tree[2*node] + Tree[2*node+1]
+
+// Range query in [L..R]
+function query(node, l, r, L, R):
+    if R < l or r < L:
+        return 0
+    if L <= l and r <= R:
+        return Tree[node]
+    mid ← (l + r) / 2
+    left_sum ← query(2*node, l, mid, L, R)
+    right_sum ← query(2*node+1, mid+1, r, L, R)
+    return left_sum + right_sum
+
+// Point update at index
+function update(node, l, r, index, value):
+    if l == r:
+        Tree[node] ← value
+    else:
+        mid ← (l + r) / 2
+        if index ≤ mid:
+            update(2*node, l, mid, index, value)
+        else:
+            update(2*node+1, mid+1, r, index, value)
+        Tree[node] ← Tree[2*node] + Tree[2*node+1]
+
+Time Complexity:
+- Build:  O(n)
+- Query: O(log n)
+- Update: O(log n)
+
+Space Complexity:
+- O(4n) for tree array
+</code></pre>
+        </details>
+
+
+        <div style="text-align:center; margin-top: 1.5rem; margin-bottom: 1rem;">
+            <img src="/image//segment.png" alt="Segment Tree Inventory Layout"
+                style="max-width: 100%; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5);" />
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure 3.</strong> Hierarchical Segment Tree representing Inventory. Each parent node stores the
+                stock summary for its child items.
+            </p>
+        </div>
+
+        <h3>2.3 Real-World System Integration</h3>
+
+        <h3>a. InventoryCounter Service</h3>
+        <p>
+            The image above shows a segment tree used by the <strong>InventoryCounter</strong> microservice. Every item
+            in the menu belongs to
+            a <em>Sub-Category</em>, which itself belongs to a <em>Category</em> (e.g., “Pizza → Veg Pizza →
+            Margherita”).
+        </p>
+        <p>
+            Each node holds the aggregate stock count of its subtree. A point update at the leaf node (Item_3 stock)
+            auto-propagates upward,
+            updating <code>Sub_category_2</code> and <code>Category_1</code>.
+        </p>
+
+        <ul>
+            <li><strong>Query:</strong> “Show all items in Category_1 that are in stock” → Traverse subtree under
+                Category_1 and filter non-zero leaf nodes.</li>
+            <li><strong>Query:</strong> “Is Category_2 out of stock?” → Check if total stock in Category_2 node is 0.
+            </li>
+            <li><strong>Query:</strong> “How many items are left in Sub_category_3?” → Query node of Sub_category_3
+                directly.</li>
+            <li><strong>Update:</strong> “Item_5 sold” → Decrease leaf node value, propagate to Sub_category_3 and
+                Category_2.</li>
+        </ul>
+
+        <p>
+            This hierarchical approach allows the system to instantly answer key inventory questions at any level—items,
+            subcategories, or categories—
+            with just <code>O(log n)</code> time complexity.
+        </p>
+
+        <h3>b. TimeWindowAnalytics Service</h3>
+        <p>
+            Segment Trees are ideal for dynamically updated time-series analytics—like live order counts across a
+            rolling
+            30-minute or 1-hour window.
+        </p>
+        <ul>
+            <li><strong>Query:</strong> “How many orders placed in the last 15 minutes?” → <code>query(t-14, t)</code>
+            </li>
+            <li><strong>Update:</strong> Order at minute <code>t</code> → <code>update(t, +1)</code></li>
+        </ul>
+
+        <h3>c. HeatmapAggregator for Zones</h3>
+        <p>
+            When each geographical zone is assigned an index (via hashing or quad-tree ordering), a segment tree can
+            track
+            zone-level KPIs—like average delivery time or order density.
+        </p>
+        <p>
+            Admin dashboards can then use range queries to display regional rollups with minimal latency.
+        </p>
+    </div>
+    <div class="box">
+        <h2>6. Fenwick Tree / Binary Indexed Tree</h2>
+
+        <p>
+            In systems that require frequent point updates and fast prefix queries—such as tracking cumulative metrics
+            like
+            total views or price deltas—
+            the <strong>Fenwick Tree</strong> (also known as Binary Indexed Tree) is a compact and efficient data
+            structure.
+        </p>
+
+        <h3>6.1 Overview of Fenwick Tree</h3>
+        <div style="text-align:center; margin-top: 1.5rem; margin-bottom: 1rem;">
+            <img src="/image/fenwick (1).png" alt="Segment Tree Inventory Layout"
+                style="max-width: 100%; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5);" />
+            <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
+                <strong>Figure 3.</strong> Interpretation of the Fenwick tree as tree. The nodes of the tree show the ranges they cover.
+            </p>
+        </div>
+        <p>
+            A Fenwick Tree maintains an auxiliary array <code>B[1..n]</code> where each index <code>i</code> stores a
+            partial sum of the original array
+            <code>A</code>. Specifically, it holds:
+        </p>
+
+        <pre><code>B[i] = A[i - 2^r + 1] + A[i - 2^r + 2] + ... + A[i]</code></pre>
+
+        <p>
+            To compute prefix sums from <code>A[1]</code> to <code>A[i]</code>, it climbs backward using the Least
+            Significant Bit (LSB)
+            to skip over relevant chunks.
+        </p>
+
+        <details>
+            <summary><strong>Pseudocode & Complexity</strong></summary>
+            <pre><code>// Prefix sum from A[1..i]
+function sum(i):
+    s = 0
+    while i > 0:
+        s += B[i]
+        i -= i & (-i)
+    return s
+
+// Add 'delta' to A[i]
+function update(i, delta):
+    while i ≤ n:
+        B[i] += delta
+        i += i & (-i)
+
+Time Complexity:
+- Update: O(log n)
+- Prefix Sum Query: O(log n)
+- Space: O(n)
+</code></pre>
+        </details>
+
+        <h3>6.2 Real-World System Integration</h3>
+
+        <h3>a. ClickStreamCounter Service</h3>
+        <p>
+            Suppose you need to track the number of views per item, and frequently query the total number of views for
+            the
+            top <code>k</code> ranked items.
+            Each user click triggers an <code>update(i, +1)</code> on the Fenwick tree. For real-time stats like “how
+            many
+            views have items 1–k received?”,
+            a simple <code>sum(k)</code> retrieves the answer instantly.
+        </p>
+        <ul>
+            <li><strong>Update:</strong> A user views Item 42 → <code>update(42, +1)</code></li>
+            <li><strong>Query:</strong> “Total views for top 100 items?” → <code>sum(100)</code></li>
+        </ul>
+
+        <h3>b. DynamicPricingImpact Service</h3>
+        <p>
+            In financial systems or e-commerce platforms, you might apply frequent small price changes to products and
+            occasionally want to know the total
+            impact across a range. For example, “how much has the cumulative price changed for items 1 to 250?”
+        </p>
+        <ul>
+            <li><strong>Update:</strong> Increase price of Item 30 by ₹3 → <code>update(30, +3)</code></li>
+            <li><strong>Query:</strong> “Net change for first 250 items?” → <code>sum(250)</code></li>
+        </ul>
+
+        <p>
+            Fenwick Trees are lightweight (using just <code>O(n)</code> space) and cache-friendly due to their
+            array-based
+            structure, making them
+            ideal for scenarios with frequent updates and running totals.
+        </p>
+
+    </div>
+
+
+
+
+
+
+
+</body>
+
+</html>
