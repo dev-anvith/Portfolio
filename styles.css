@@ -170,15 +170,7 @@ header {
   font-size: 1rem;
 }
 
-/* .project-block::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay for better text readability 
-} */
+
 
 #projects-container {
   display: flex;
@@ -189,18 +181,14 @@ header {
   padding: 50px 20px;
   flex-wrap: wrap;
 }
-
-/* road map */
-/* * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.read-more-btn a {
+    text-decoration: none;
+    color: #7a1cac;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-} */
+
+
+
 .journey {
   padding-top: 70px;
   padding-bottom: 0px;
