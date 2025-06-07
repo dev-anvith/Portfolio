@@ -341,7 +341,9 @@ footer {
 /* Styling for all social media icons */
 .insta,
 .x,
-.linkedin {
+.linkedin,
+.github,
+.resume {
   font-size: 30px; /* Set the size of the icons */
   color: var(--secondary-color); /* Default color */
   margin: 0 10px; /* Space between icons */

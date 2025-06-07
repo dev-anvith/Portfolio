@@ -15,7 +15,8 @@
         }
 
         body {
-            margin: 50px;
+            margin-left: 240px;
+            margin-right: 50px;
             font-family: 'Source Code Pro', monospace;
             background-color: #0d0d0d;
             color: var(--text-color);
@@ -73,6 +74,7 @@
             margin-top: 15px;
             border: 1px solid white;
             padding: 10px;
+            border-radius: 5px;
         }
 
         .batching {
@@ -80,9 +82,68 @@
             width: 70%;
         }
 
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            width: 180px;
+            background-color: #1a1a1a;
+            border: 1px solid #ad49e1;
+            padding: 1rem;
+            border-radius: 8px;
+            z-index: 1000;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            color: #fff;
+        }
+        .nav-links a {
+            margin-left: 10px;
+            margin-right: 10px;
+            text-decoration: none;
+            color: aliceblue;
+            font-size: 16px;
+            padding: 10px;
+            /* Padding inside the links */
+            border: 1px solid aliceblue;
+            /* Thin white border around the links */
+            transition: background-color 0.3s, color 0.3s;
+            /* Optional: smooth hover effect */
+        }
+
+        .nav-links a:hover {
+            background-color: aliceblue;
+            /* Change background on hover */
+            color: black;
+            /* Change text color on hover */
+        }
+
+
         @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
             body {
                 padding: 1rem 1.5rem;
+                margin: 30px 50px;
             }
 
             h1 {
@@ -149,8 +210,25 @@
 </head>
 
 <body>
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#naive">Naïve Logic</a></li>
+                <li><a href="#batching">Batching</a></li>
+                <li><a href="#graph">Graph Construction</a></li>
+                <li><a href="#matching">Final Match</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+                <li><a href="#ref">References</a></li>
+            </ul>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+            </div>
+        </nav>
+
+    </div>
     <h1>Delivering Smarter: How FOODMATCH Is Revolutionizing Food Delivery</h1>
-    <div class="box">
+    <div class="box" id="intro">
         <h2>1. Introduction: From Chaos to Coordination</h2>
         <p>
             Every minute, thousands of food orders are placed across cities. Customers expect them fast and fresh. But
@@ -172,7 +250,7 @@
 
     </div>
 
-    <div class="box">
+    <div class="box" id="naive">
         <h2>2. Why Naïve Logic Fails in a Fast-Moving World</h2>
         <p>
             Traditional delivery platforms often rely on the simplest strategy: assign the nearest available rider to a
@@ -211,7 +289,7 @@
 
     </div>
 
-    <div class="box">
+    <div class="box" id="batching">
         <h2>3. Batching Orders the Smart Way: FOODMATCH’s Core Insight</h2>
         <p>
             FOODMATCH introduces intelligent batching to address these inefficiencies. Instead of dispatching a rider
@@ -289,7 +367,7 @@
         </details>
 
     </div>
-    <div class="box">
+    <div class="box" id="graph">
         <h2>4. Making the Match: Intelligent Graph Construction with Directional Awareness</h2>
         <p>
             Once the batching process is complete, the system now has two sets to work with: a set of
@@ -364,7 +442,7 @@
             decision making.
         </p>
         <details>
-             <summary><strong>Pseudocode & Complexity</strong></summary>
+            <summary><strong>Pseudocode & Complexity</strong></summary>
 
             <pre><code>
 // Inputs:
@@ -414,7 +492,7 @@
         </details>
 
     </div>
-    <div class="box">
+    <div class="box" id="matching">
         <h2>5. The Final Match: How FOODMATCH Optimizes Assignments</h2>
         <p>
             After batching and building a sparsified FOODGRAPH, the final step is to decide which delivery partner
@@ -440,10 +518,10 @@
             The Hungarian algorithm ensures that each rider is matched to the most cost-effective batch, taking into
             account factors like delivery time, current direction, and overall system efficiency—not just proximity.
         </p>
-<details>
-        <summary><strong>Pseudocode & Complexity</strong></summary>
+        <details>
+            <summary><strong>Pseudocode & Complexity</strong></summary>
 
-        <pre><code>
+            <pre><code>
 // Conceptual view of the assignment step
 for each batch b in B:
     for each rider r in R:
@@ -457,7 +535,8 @@ assign riders based on optimal match
 //   - Cost matrix computation: O(n^2)
 //   - Kuhn-Munkres (Hungarian Algorithm): O(n^3)
 //   Overall: O(n^3), where n is the number of riders or batches (whichever is larger)
-</code></pre></details>
+</code></pre>
+        </details>
 
         <h3>Why This Matters</h3>
         <p>
@@ -472,8 +551,8 @@ assign riders based on optimal match
         </p>
 
     </div>
-    <div class="box">
-        <h2>8. Conclusion: Rethinking Real-Time Logistics</h2>
+    <div class="box" id="conclusion">
+        <h2>6. Conclusion: Rethinking Real-Time Logistics</h2>
         <p>
             Online food delivery may look simple on the surface, but behind every successful delivery is a system
             solving complex optimization problems in real time. <strong>FOODMATCH</strong> showcases how thoughtful
@@ -499,6 +578,30 @@ assign riders based on optimal match
         </p>
 
     </div>
+    <div class="box" id="ref">
+    <h2>7. References</h2>
+        <ol style="font-size: 0.95rem; color: #ccc; padding-left: 1.2rem;">
+        <li>
+            Joshi, M., Singh, A., Ranu, S., Bagchi, A., Karia, P., & Kala, P. (2021). 
+            <strong>Batching and Matching for Food Delivery in Dynamic Road Networks</strong>. 
+            ACM Transactions on Spatial Algorithms and Systems. 
+            <a href="https://dl.acm.org/doi/10.1145/3494530" target="_blank" style="color: var(--accent-color);">https://doi.org/10.1145/3494530</a>
+        </li>
+        <li>
+            Liu, C., Yan, H., Sui, H., et al. (2024). 
+            <strong>MRGRP: Empowering Courier Route Prediction in Food Delivery Service with Multi-Relational Graph</strong>. 
+            arXiv preprint. 
+            <a href="https://arxiv.org/abs/2505.11999" target="_blank" style="color: var(--accent-color);">https://arxiv.org/abs/2505.11999</a>
+        </li>
+        <li>
+            Gupta, A., Yadav, R., Nair, A., et al. (2022). 
+            <strong>FairFoody: Bringing in Fairness in Food Delivery</strong>. 
+            arXiv preprint. 
+            <a href="https://arxiv.org/abs/2203.08849" target="_blank" style="color: var(--accent-color);">https://arxiv.org/abs/2203.08849</a>
+        </li>
+    </ol>
+</div>
+
 </body>
 
 </html>

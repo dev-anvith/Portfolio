@@ -15,7 +15,8 @@
         }
 
         body {
-            margin: 50px;
+            margin-left: 240px;
+            margin-right: 50px;
             font-family: 'Source Code Pro', monospace;
             background-color: #0d0d0d;
             color: var(--text-color);
@@ -59,6 +60,7 @@
 
         code {
             color: #fff;
+            font-family: 'Source Code Pro', monospace;
             background-color: #471a5a;
             padding: 0.2rem 0.4rem;
             border-radius: 4px;
@@ -71,26 +73,77 @@
         .box {
             margin-top: 15px;
             border: 1px solid white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 5px;
         }
 
-        img {
-            max-width: 100%;
+        .batching {
+            height: 80%;
+            width: 70%;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            width: 180px;
+            background-color: #1a1a1a;
+            border: 1px solid #ad49e1;
+            padding: 1rem;
             border-radius: 8px;
-            border: 2px solid var(--accent-color);
-            margin: 20px 0;
+            z-index: 1000;
         }
 
-        .caption {
-            font-size: 0.95rem;
-            color: #ccc;
-            text-align: center;
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
+
+        .sidebar li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            color: #fff;
+        }
+        .nav-links a {
+            margin-left: 10px;
+            margin-right: 10px;
+            text-decoration: none;
+            color: aliceblue;
+            font-size: 16px;
+            padding: 10px;
+            /* Padding inside the links */
+            border: 1px solid aliceblue;
+            /* Thin white border around the links */
+            transition: background-color 0.3s, color 0.3s;
+            /* Optional: smooth hover effect */
+        }
+
+        .nav-links a:hover {
+            background-color: aliceblue;
+            /* Change background on hover */
+            color: black;
+            /* Change text color on hover */
+        }
+
 
         @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
             body {
                 padding: 1rem 1.5rem;
+                margin: 30px 50px;
             }
 
             h1 {
@@ -157,6 +210,21 @@
 </head>
 
 <body>
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="#intro"> Kadanes Algorithm</a></li>
+                <li><a href="#naive"> Segment Trees</a></li>
+                <li><a href="#batching"> Fenwick Trees</a></li>
+                <li><a href="#ref">References</a></li>
+                
+            </ul>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+            </div>
+        </nav>
+        
+    </div>
     <h1>Unlocking The Power of Range Queries</h1>
     <div class="box">
         <h2>1. Surge Detection using Kadane’s Algorithm</h2>
@@ -204,7 +272,7 @@ Space Complexity: O(1) — only two scalar trackers
         </p>
         <div style="text-align:center; margin: 1.5rem 0;">
             <img src="image/Kadanes.png" alt="QuadTree subdivision and tree" width="auto"
-                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+                style="max-width: 100%;border-radius: 8px; border: 2px solid #ad49e1;" />
             <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 2.</strong> A time frame of incoming orders,
                 which undergo a transformation where they are substracted by a number (moving average of the number of
                 order). Further the Kadanes Algorithm is performed on the resulting array.</p>
@@ -224,8 +292,8 @@ Space Complexity: O(1) — only two scalar trackers
             without ever scanning the entire day’s data.
         </p>
         <div style="text-align:center; margin: 1.5rem 0;">
-            <img src="image/order-surge.png" alt="QuadTree subdivision and tree" width="auto"
-                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <img src="image/order-surge.png" alt="QuadTree subdivision and tree" 
+                style="max-width: 100%;border-radius: 8px; border: 2px solid #ad49e1;" />
             <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 2.</strong> Zone - A has a order surge which then
                 activates DispatchCoordinator service and SurgePricing service.</p>
         </div>
@@ -389,7 +457,7 @@ Space Complexity:
         </p>
     </div>
     <div class="box">
-        <h2>6. Fenwick Tree / Binary Indexed Tree</h2>
+        <h2>3. Fenwick Tree / Binary Indexed Tree</h2>
 
         <p>
             In systems that require frequent point updates and fast prefix queries—such as tracking cumulative metrics
@@ -399,7 +467,7 @@ Space Complexity:
             structure.
         </p>
 
-        <h3>6.1 Overview of Fenwick Tree</h3>
+        <h3>3.1 Overview of Fenwick Tree</h3>
         <div style="text-align:center; margin-top: 1.5rem; margin-bottom: 1rem;">
             <img src="image/fenwick (1).png" alt="Segment Tree Inventory Layout"
                 style="max-width: 100%; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5);" />
@@ -444,7 +512,7 @@ Time Complexity:
 </code></pre>
         </details>
 
-        <h3>6.2 Real-World System Integration</h3>
+        <h3>3.2 Real-World System Integration</h3>
 
         <h3>a. ClickStreamCounter Service</h3>
         <p>
@@ -481,6 +549,33 @@ Time Complexity:
 
     </div>
 
+   <div class="box" id="#ref">
+    <h2>4. References</h2>
+    
+    <ol style="font-size: 0.95rem; color: #ccc; padding-left: 1.2rem;">
+        <li>
+            <strong>Segment Tree</strong>. 
+            cp-algorithms.com. 
+            <a href="https://cp-algorithms.com/data_structures/segment_tree.html" target="_blank" style="color: var(--accent-color);">
+                https://cp-algorithms.com/data_structures/segment_tree.html
+            </a>
+        </li>
+        <li>
+            <strong>Fenwick Tree (Binary Indexed Tree)</strong>. 
+            cp-algorithms.com. 
+            <a href="https://cp-algorithms.com/data_structures/fenwick.html" target="_blank" style="color: var(--accent-color);">
+                https://cp-algorithms.com/data_structures/fenwick.html
+            </a>
+        </li>
+        <li>
+            <strong>Segment Tree (Repeated)</strong>. 
+            cp-algorithms.com. 
+            <a href="https://cp-algorithms.com/data_structures/segment_tree.html" target="_blank" style="color: var(--accent-color);">
+                https://cp-algorithms.com/data_structures/segment_tree.html
+            </a>
+        </li>
+    </ol>
+</div>
 
 
 

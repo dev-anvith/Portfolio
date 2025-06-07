@@ -15,7 +15,8 @@
         }
 
         body {
-            margin: 50px;
+            margin-left: 240px;
+            margin-right: 50px;
             font-family: 'Source Code Pro', monospace;
             background-color: #0d0d0d;
             color: var(--text-color);
@@ -59,6 +60,7 @@
 
         code {
             color: #fff;
+            font-family: 'Source Code Pro', monospace;
             background-color: #471a5a;
             padding: 0.2rem 0.4rem;
             border-radius: 4px;
@@ -71,91 +73,166 @@
         .box {
             margin-top: 15px;
             border: 1px solid white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 5px;
         }
 
-        img {
-            max-width: 100%;
+        .batching {
+            height: 80%;
+            width: 70%;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            width: 180px;
+            background-color: #1a1a1a;
+            border: 1px solid #ad49e1;
+            padding: 1rem;
             border-radius: 8px;
-            border: 2px solid var(--accent-color);
-            margin: 20px 0;
+            z-index: 1000;
         }
 
-        .caption {
-            font-size: 0.95rem;
-            color: #ccc;
-            text-align: center;
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
+
+        .sidebar li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            color: #fff;
+        }
+
+        .nav-links a {
+            margin-left: 10px;
+            margin-right: 10px;
+            text-decoration: none;
+            color: aliceblue;
+            font-size: 16px;
+            padding: 10px;
+            /* Padding inside the links */
+            border: 1px solid aliceblue;
+            /* Thin white border around the links */
+            transition: background-color 0.3s, color 0.3s;
+            /* Optional: smooth hover effect */
+        }
+
+        .nav-links a:hover {
+            background-color: aliceblue;
+            /* Change background on hover */
+            color: black;
+            /* Change text color on hover */
+        }
+
+
         @media (max-width: 768px) {
-      body {
-        padding: 1rem 1.5rem;
-      }
+            .sidebar {
+                display: none;
+            }
 
-      h1 {
-        font-size: 2rem;
-        text-align: center;
-      }
+            body {
+                padding: 1rem 1.5rem;
+                margin: 30px 50px;
+            }
 
-      h2 {
-        font-size: 1.5rem;
-        padding-left: 0.75rem;
-      }
+            h1 {
+                font-size: 2rem;
+                text-align: center;
+            }
 
-      p, li {
-        font-size: 0.95rem;
-      }
+            h2 {
+                font-size: 1.5rem;
+                padding-left: 0.75rem;
+            }
 
-      .box {
-        padding: 15px;
-      }
+            p,
+            li {
+                font-size: 0.95rem;
+            }
 
-      pre {
-        font-size: 0.85rem;
-      }
+            .box {
+                padding: 15px;
+            }
 
-      .caption {
-        font-size: 0.85rem;
-      }
-    }
+            pre {
+                font-size: 0.85rem;
+            }
 
-    @media (max-width: 480px) {
-      body {
-        padding: 0.5rem;
+            .caption {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
                 margin: 10px;
-      }
+            }
 
-      h1 {
-        font-size: 1.75rem;
-      }
+            h1 {
+                font-size: 1.75rem;
+            }
 
-      h2 {
-        font-size: 1.25rem;
-        padding-left: 0.5rem;
-      }
+            h2 {
+                font-size: 1.25rem;
+                padding-left: 0.5rem;
+            }
 
-      p, li {
-        font-size: 0.9rem;
-      }
+            p,
+            li {
+                font-size: 0.9rem;
+            }
 
-      pre {
-        font-size: 0.8rem;
-      }
+            pre {
+                font-size: 0.8rem;
+            }
 
-      .box {
-        padding: 10px;
-      }
+            .box {
+                padding: 10px;
+            }
 
-      .caption {
-        font-size: 0.8rem;
-      }}
+            .caption {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#naive">Naive Logic</a></li>
+                <li><a href="#geo">Geohashing</a></li>
+                <li><a href="#quad">Quadtrees</a></li>
+                <li><a href="#all">Putting it All Together</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+                <li><a href="#ref">References</a></li>
+            </ul>
+            
+        </nav>
+        <div class="nav-links">
+                <a href="index.html">Home</a>
+            </div>
+        
+    </div>
+    
     <h1>QuadHash: Structuring Restaurant Data with Spatial Precision</h1>
 
-    <div class="box">
+    <div class="box" id="intro">
         <h2>Introduction: Speed, Scale, and the Hidden Challenge</h2>
         <p>
             In the age of instant gratification, every second counts. When a user opens a food-delivery app, they expect
@@ -182,7 +259,7 @@
     </div>
 
 
-    <div class="box">
+    <div class="box" id="naive">
         <h2>2. The Challenge with Naive Distance Filtering</h2>
         <p>
             Suppose we want to find all restaurants within a <strong>1 km radius</strong> of a user. A straightforward
@@ -210,7 +287,7 @@
     </div>
 
 
-    <div class="box">
+    <div class="box" id="geo">
         <h2>3. Geohashing: Bucketing into Fixed Grid Cells</h2>
 
         <h3>3.1 How Geohashing Works</h3>
@@ -230,8 +307,8 @@
         </p>
 
         <div style="text-align:center; margin-top: 1.5rem; margin-bottom: 1.5rem;">
-            <img src="image/geohash.png" alt="Geohash grid overlay" width="400"
-                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <img src="image/geohash.png" alt="Geohash grid overlay" 
+                style="max-width: 100%;border-radius: 8px; border: 2px solid #ad49e1;" />
             <p style="font-size: 0.95rem; color: #ccc; margin-top: 0.5rem;">
                 <strong>Figure 1.</strong> A geohash overlay (cells labeled “w886hu0,” “w886hu1,” etc.). Each cell is
                 roughly 1 km² at this precision.
@@ -313,7 +390,7 @@
     </div>
 
 
-    <div class="box">
+    <div class="box" id="quad">
         <h2>4. Quadtrees: Adaptive Subdivision for Fast Pruning</h2>
 
         <h3>4.1 Quadtree Concept</h3>
@@ -353,8 +430,8 @@
         </ul>
 
         <div style="text-align:center; margin: 1.5rem 0;">
-            <img src="image/case-2-quad.png" alt="QuadTree subdivision and tree" width="auto"
-                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <img src="image/case-2-quad.png" alt="QuadTree subdivision and tree" 
+                style="max-width: 100%;border-radius: 8px; border: 2px solid #ad49e1;" />
             <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 2.</strong> (Left) Restaurants plotted on a map
                 in various colored squares. Dense clusters force deeper subdivisions. (Right) The corresponding
                 quadtree, where each square node holds at most “capacity” restaurants, splitting further as needed.</p>
@@ -417,8 +494,8 @@ function intersectsCircle(bounds, uLat, uLon, R):
         </p>
 
         <div style="text-align:center; margin: 1.5rem 0;">
-            <img src="image/case-2-quad-rebuild.png" alt="QuadTree merge process" width="auto"
-                style="border-radius: 8px; border: 2px solid #ad49e1;" />
+            <img src="image/case-2-quad-rebuild.png" alt="QuadTree merge process" 
+                style="max-width: 100%;border-radius: 8px; border: 2px solid #ad49e1;" />
             <p style="font-size: 0.95rem; color: #ccc;"><strong>Figure 3.</strong> (Left) Before closure: Parent’s four
                 children hold various numbers of restaurants. (Right) After one restaurant closes, all four children
                 together hold ≤ capacity, so they merge into the parent’s single leaf.</p>
@@ -451,7 +528,7 @@ function intersectsCircle(bounds, uLat, uLon, R):
     </div>
 
 
-    <div class="box">
+    <div class="box" id="all">
         <h2>5. Putting It All Together</h2>
 
         <p>
@@ -482,7 +559,7 @@ function intersectsCircle(bounds, uLat, uLon, R):
         </p>
     </div>
 
-    <div class="box">
+    <div class="box" id="conclusion">
         <h2>6. Conclusion</h2>
         <p>
             When a hungry user demands pizza in under a second, every millisecond of server time counts.
@@ -503,6 +580,30 @@ function intersectsCircle(bounds, uLat, uLon, R):
             location-based application.
         </p>
     </div>
+    <div class="box" id="ref">
+    <h2>7. References</h2>
+
+    <ol style="font-size: 0.95rem; color: #ccc; padding-left: 1.2rem;">
+        <li>
+            Niemeyer, J., & Rottensteiner, F. (2020). 
+            <strong>Efficient Spatial Indexing using Geohash for Location-Based Services</strong>. 
+            International Journal of Geographical Information Science, 34(3), 523–543. 
+            <a href="https://doi.org/10.1080/13658816.2019.1664817" target="_blank" style="color: var(--accent-color);">https://doi.org/10.1080/13658816.2019.1664817</a>
+        </li>
+        <li>
+            Samet, H. (2006). 
+            <strong>Foundations of Multidimensional and Metric Data Structures</strong>. 
+            Morgan Kaufmann Publishers. 
+            <a href="https://dl.acm.org/doi/book/10.5555/1128211" target="_blank" style="color: var(--accent-color);">https://dl.acm.org/doi/book/10.5555/1128211</a>
+        </li>
+        <li>
+            Garg, P., & Jain, R. (2019). 
+            <strong>Quadtrees for Spatial Indexing: A Comprehensive Survey</strong>. 
+            IEEE Access, 7, 178445–178460. 
+            <a href="https://ieeexplore.ieee.org/document/8860447" target="_blank" style="color: var(--accent-color);">https://ieeexplore.ieee.org/document/8860447</a>
+        </li>
+    </ol>
+</div>
 
 
 </body>
