@@ -325,7 +325,7 @@
 //   qualityThreshold – Cutoff value for average cost to stop merging
 // Outputs:
 //   finalBatches – List of grouped orders (batches)
-//   routePlans – Optimized route plans for each batch
+
 
 1.  round = 0
 2.  batches[0] = initial individual orders grouped as one order per batch
@@ -354,13 +354,12 @@
 16.     round += 1
 
 17. finalBatches = extractOrdersFrom(batches[round])
-18. routePlans = extractRoutesFrom(batches[round])
-19. return finalBatches, routePlans
+18. return finalBatches, routePlans
 
 // Time Complexity:
 //   Let n be the number of orders in the window.
 //   - Initial pairwise cost computation: O(n^2)
-//   - In each round: merging + route computation ~ O(n)
+//   - In each round: merging ~ O(n)
 //   - Number of rounds: O(n)
 //   Overall: O(n^2) due to pairwise merging and recomputation
 </code></pre>
